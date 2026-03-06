@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes Révisions Brevet</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #16161d;
+    --card: #1c1c26;
+    --border: #2a2a38;
+    --accent: #f0c040;
+    --accent2: #6ee7b7;
+    --accent3: #a78bfa;
+    --text: #e8e8f0;
+    --muted: #8080a0;
+    --danger: #f87171;
+    --math: #60a5fa;
+    --french: #f472b6;
+    --history: #fb923c;
+    --science: #4ade80;
+    --english: #a78bfa;
+    --geo: #34d399;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(240,192,64,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(110,231,183,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* ——— HEADER ——— */
+  header {
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 36px;
+  }
+
+  .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { color: var(--text); font-weight: 600; }
+
+  .header-stats { display: flex; gap: 20px; }
+  .stat-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .stat-pill strong { color: var(--accent); }
+
+  /* ——— SUBJECT TABS ——— */
+  .subject-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .tab {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .tab:hover { border-color: var(--accent); color: var(--accent); }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #0f0f13; }
+
+  .tab[data-subject="Maths"].active { background: var(--math); border-color: var(--math); }
+  .tab[data-subject="Français"].active { background: var(--french); border-color: var(--french); }
+  .tab[data-subject="Histoire"].active { background: var(--history); border-color: var(--history); }
+  .tab[data-subject="Sciences"].active { background: var(--science); border-color: var(--science); }
+  .tab[data-subject="Anglais"].active { background: var(--english); border-color: var(--english); }
+  .tab[data-subject="Géographie"].active { background: var(--geo); border-color: var(--geo); }
+
+  /* ——— MAIN LAYOUT ——— */
+  .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
+  @media (max-width: 800px) { .main-grid { grid-template-columns: 1fr; } }
+
+  /* ——— NEW FICHE FORM ——— */
+  .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 28px;
+  }
+
+  .form-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: var(--accent);
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+
+  label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+  input[type="text"], select, textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 10px 14px;
+    transition: border-color 0.18s;
+    outline: none;
+    width: 100%;
+  }
+
+  input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+  select option { background: var(--surface); }
+
+  textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+
+  .btn-add {
+    background: var(--accent);
+    color: #0f0f13;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.18s, transform 0.12s;
+  }
+
+  .btn-add:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-add:active { transform: translateY(0); }
+
+  /* ——— FICHES LIST ——— */
+  .fiches-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .fiches-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+  }
+
+  .search-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    padding: 8px 14px;
+    outline: none;
+    width: 200px;
+    transition: border-color 0.18s;
+  }
+
+  .search-box:focus { border-color: var(--accent); }
+
+  .fiches-grid { display: flex; flex-direction: column; gap: 12px; }
+
+  /* ——— FICHE CARD ——— */
+  .fiche-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: border-color 0.18s, transform 0.18s;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fiche-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 4px 0 0 4px;
+    background: var(--subject-color, var(--accent));
+    transition: width 0.18s;
+  }
+
+  .fiche-card:hover { border-color: var(--subject-color, var(--accent)); transform: translateX(2px); }
+  .fiche-card:hover::before { width: 6px; }
+
+  .fiche-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+
+  .fiche-title { font-weight: 600; font-size: 1rem; color: var(--text); }
+
+  .fiche-badges { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .badge {
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+  }
+
+  .badge-subject { color: var(--subject-color, var(--accent)); border-color: var(--subject-color, var(--accent)); background: rgba(var(--subject-color-rgb, 240,192,64), 0.08); }
+
+  .fiche-preview {
+    font-size: 0.83rem;
+    color: var(--muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .fiche-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+
+  .fiche-date { font-size: 0.75rem; color: var(--muted); }
+
+  .fiche-actions { display: flex; gap: 6px; }
+
+  .btn-icon {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-icon:hover { border-color: var(--danger); color: var(--danger); background: rgba(248,113,113,0.08); }
+  .btn-icon.edit:hover { border-color: var(--accent); color: var(--accent); background: rgba(240,192,64,0.08); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .empty-state .emoji { font-size: 3rem; margin-bottom: 12px; }
+  .empty-state p { font-size: 0.9rem; }
+
+  /* ——— SIDEBAR ——— */
+  .sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+  .side-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+
+  .side-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 16px;
+    color: var(--accent);
+  }
+
+  .subject-bars { display: flex; flex-direction: column; gap: 10px; }
+
+  .subject-bar-item { display: flex; flex-direction: column; gap: 4px; }
+
+  .subject-bar-label { display: flex; justify-content: space-between; font-size: 0.8rem; }
+
+  .subject-bar-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .subject-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+  }
+
+  .tips-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .tip-item {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+    padding: 10px 12px;
+    background: var(--surface);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent2);
+  }
+
+  /* ——— MODAL ——— */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 36px;
+    transform: scale(0.95);
+    transition: transform 0.2s;
+    position: relative;
+  }
+
+  .modal-overlay.open .modal { transform: scale(1); }
+
+  .modal-subject-stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: 20px 20px 0 0;
+    background: var(--subject-color, var(--accent));
+  }
+
+  .modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; line-height: 1.3; }
+
+  .modal-close {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 6px 12px;
+    line-height: 1;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .modal-close:hover { color: var(--danger); border-color: var(--danger); }
+
+  .modal-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+
+  .modal-content {
+    font-size: 0.93rem;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 18px;
+    border: 1px solid var(--border);
+  }
+
+  /* ——— NOTIFICATION ——— */
+  .notif {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 0.875rem;
+    color: var(--accent);
+    z-index: 200;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+  }
+
+  .notif.show { transform: translateY(0); opacity: 1; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">Brevet<span>Fiches</span></div>
+      <div class="header-stats">
+        <div class="stat-pill">📋 <strong id="total-count">0</strong> fiches</div>
+        <div class="stat-pill">📅 Brevet 2025</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SUBJECT TABS -->
+  <div class="subject-tabs" id="subject-tabs">
+    <button class="tab active" data-subject="Tous">Toutes les matières</button>
+    <button class="tab" data-subject="Maths">🔢 Maths</button>
+    <button class="tab" data-subject="Français">📖 Français</button>
+    <button class="tab" data-subject="Histoire">🏛️ Histoire</button>
+    <button class="tab" data-subject="Géographie">🌍 Géographie</button>
+    <button class="tab" data-subject="Sciences">🔬 Sciences</button>
+    <button class="tab" data-subject="Anglais">🇬🇧 Anglais</button>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+    <div class="left-col">
+      <!-- NEW FICHE FORM -->
+      <div class="form-card">
+        <h2 id="form-title">✏️ Nouvelle fiche</h2>
+        <input type="hidden" id="edit-id" value="">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Titre de la fiche</label>
+            <input type="text" id="fiche-title" placeholder="ex: Les équations du 1er degré">
+          </div>
+          <div class="form-group">
+            <label>Matière</label>
+            <select id="fiche-subject">
+              <option value="Maths">🔢 Maths</option>
+              <option value="Français">📖 Français</option>
+              <option value="Histoire">🏛️ Histoire</option>
+              <option value="Géographie">🌍 Géographie</option>
+              <option value="Sciences">🔬 Sciences</option>
+              <option value="Anglais">🇬🇧 Anglais</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Contenu de la fiche (cours, définitions, formules…)</label>
+          <textarea id="fiche-content" placeholder="Écris ici les points importants à retenir...&#10;&#10;• Définitions clés&#10;• Formules / méthodes&#10;• Exemples&#10;• Pièges à éviter"></textarea>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn-add" onclick="saveFiche()">💾 Enregistrer</button>
+          <button class="btn-add" id="cancel-edit" style="background:var(--surface);border:1px solid var(--border);color:var(--muted);display:none;" onclick="cancelEdit()">Annuler</button>
+        </div>
+      </div>
+
+      <!-- FICHES LIST -->
+      <div>
+        <div class="fiches-header">
+          <h2>Mes fiches</h2>
+          <input type="text" class="search-box" id="search-box" placeholder="🔍 Rechercher..." oninput="renderFiches()">
+        </div>
+        <div class="fiches-grid" id="fiches-grid">
+          <!-- fiches rendered here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="side-card">
+        <h3>📊 Progression</h3>
+        <div class="subject-bars" id="subject-bars"></div>
+      </div>
+
+      <div class="side-card">
+        <h3>💡 Conseils brevet</h3>
+        <div class="tips-list">
+          <div class="tip-item">Révise par petites sessions de 25 min (méthode Pomodoro) ✅</div>
+          <div class="tip-item">Relis tes fiches le lendemain pour mieux mémoriser 🔄</div>
+          <div class="tip-item">Fais des schémas et mind maps pour retenir 🗺️</div>
+          <div class="tip-item">Teste-toi sans regarder tes notes pour ancrer les connaissances 🧠</div>
+          <div class="tip-item">Dors bien avant le brevet, c'est essentiel ! 💤</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-subject-stripe" id="modal-stripe"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-meta" id="modal-meta"></div>
+    <div class="modal-content" id="modal-content"></div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<script>
+const SUBJECT_COLORS = {
+  Maths: '#60a5fa',
+  Français: '#f472b6',
+  Histoire: '#fb923c',
+  Sciences: '#4ade80',
+  Anglais: '#a78bfa',
+  Géographie: '#34d399',
+};
+
+let fiches = JSON.parse(localStorage.getItem('brevet-fiches') || '[]');
+let currentSubject = 'Tous';
+
+function save() {
+  localStorage.setItem('brevet-fiches', JSON.stringify(fiches));
+}
+
+function saveFiche() {
+  const title = document.getElementById('fiche-title').value.trim();
+  const subject = document.getElementById('fiche-subject').value;
+  const content = document.getElementById('fiche-content').value.trim();
+  const editId = document.getElementById('edit-id').value;
+
+  if (!title || !content) {
+    showNotif('⚠️ Titre et contenu obligatoires !');
+    return;
+  }
+
+  if (editId) {
+    const idx = fiches.findIndex(f => f.id === editId);
+    if (idx !== -1) {
+      fiches[idx] = { ...fiches[idx], title, subject, content };
+      showNotif('✅ Fiche modifiée !');
+    }
+    cancelEdit();
+  } else {
+    fiches.unshift({
+      id: Date.now().toString(),
+      title, subject, content,
+      date: new Date().toLocaleDateString('fr-FR')
+    });
+    showNotif('✅ Fiche ajoutée !');
+    document.getElementById('fiche-title').value = '';
+    document.getElementById('fiche-content').value = '';
+  }
+
+  save();
+  renderFiches();
+  renderStats();
+}
+
+function cancelEdit() {
+  document.getElementById('edit-id').value = '';
+  document.getElementById('form-title').textContent = '✏️ Nouvelle fiche';
+  document.getElementById('fiche-title').value = '';
+  document.getElementById('fiche-content').value = '';
+  document.getElementById('cancel-edit').style.display = 'none';
+}
+
+function editFiche(id) {
+  const f = fiches.find(f => f.id === id);
+  if (!f) return;
+  document.getElementById('edit-id').value = f.id;
+  document.getElementById('fiche-title').value = f.title;
+  document.getElementById('fiche-subject').value = f.subject;
+  document.getElementById('fiche-content').value = f.content;
+  document.getElementById('form-title').textContent = '🖊️ Modifier la fiche';
+  document.getElementById('cancel-edit').style.display = 'inline-block';
+  document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function deleteFiche(id) {
+  if (!confirm('Supprimer cette fiche ?')) return;
+  fiches = fiches.filter(f => f.id !== id);
+  save();
+  renderFiches();
+  renderStats();
+  showNotif('🗑️ Fiche supprimée');
+}
+
+function openFiche(id) {
+  const f = fiches.find(f => f.id === id);
+  if (!f) return;
+  const color = SUBJECT_COLORS[f.subject] || '#f0c040';
+  document.getElementById('modal-title').textContent = f.title;
+  document.getElementById('modal-stripe').style.background = color;
+  document.getElementById('modal-meta').innerHTML = `
+    <span class="badge badge-subject" style="color:${color};border-color:${color}">${f.subject}</span>
+    <span class="badge">📅 ${f.date}</span>
+  `;
+  document.getElementById('modal-content').textContent = f.content;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+// Keyboard ESC
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
+
+function renderFiches() {
+  const grid = document.getElementById('fiches-grid');
+  const search = document.getElementById('search-box').value.toLowerCase();
+  
+  let list = fiches;
+  if (currentSubject !== 'Tous') list = list.filter(f => f.subject === currentSubject);
+  if (search) list = list.filter(f => f.title.toLowerCase().includes(search) || f.content.toLowerCase().includes(search) || f.subject.toLowerCase().includes(search));
+
+  document.getElementById('total-count').textContent = fiches.length;
+
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><div class="emoji">📂</div><p>Aucune fiche trouvée.<br>Crée ta première fiche ci-dessus !</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(f => {
+    const color = SUBJECT_COLORS[f.subject] || '#f0c040';
+    return `
+      <div class="fiche-card" style="--subject-color:${color}" onclick="openFiche('${f.id}')">
+        <div class="fiche-top">
+          <div class="fiche-title">${escHtml(f.title)}</div>
+          <div class="fiche-badges">
+            <span class="badge badge-subject" style="color:${color};border-color:${color};background:${color}18">${f.subject}</span>
+          </div>
+        </div>
+        <div class="fiche-preview">${escHtml(f.content)}</div>
+        <div class="fiche-meta">
+          <span class="fiche-date">📅 ${f.date}</span>
+          <div class="fiche-actions">
+            <button class="btn-icon edit" onclick="event.stopPropagation();editFiche('${f.id}')">✏️</button>
+            <button class="btn-icon" onclick="event.stopPropagation();deleteFiche('${f.id}')">🗑️</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderStats() {
+  const subjects = ['Maths','Français','Histoire','Géographie','Sciences','Anglais'];
+  const counts = {};
+  subjects.forEach(s => counts[s] = fiches.filter(f => f.subject === s).length);
+  const max = Math.max(...Object.values(counts), 1);
+
+  document.getElementById('subject-bars').innerHTML = subjects.map(s => {
+    const color = SUBJECT_COLORS[s];
+    const pct = Math.round((counts[s] / max) * 100);
+    return `
+      <div class="subject-bar-item">
+        <div class="subject-bar-label">
+          <span style="font-size:0.8rem">${s}</span>
+          <span style="font-size:0.8rem;color:var(--muted)">${counts[s]} fiche${counts[s] > 1 ? 's' : ''}</span>
+        </div>
+        <div class="subject-bar-track">
+          <div class="subject-bar-fill" style="width:${pct}%;background:${color}"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Subject tabs
+document.getElementById('subject-tabs').addEventListener('click', e => {
+  if (!e.target.classList.contains('tab')) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  currentSubject = e.target.dataset.subject;
+  renderFiches();
+});
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showNotif(msg) {
+  const n = document.getElementById('notif');
+  n.textContent = msg;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 2500);
+}
+
+// Init
+renderFiches();
+renderStats();
+</script>
+</body>
+</html>
